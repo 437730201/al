@@ -1,0 +1,167 @@
+<!--
+	UI第一作者：hsiao
+	UI第二作者：Marst
+	时间：2018-01-03
+	描述：correction@1.0
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>WiPAS Correction Web</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/jquery.dataTables.min.css">
+		
+	</head>
+	<body>
+		<header>
+			<!--<img class="img-responsive" id="header-img" src="img/header_logo.png">-->
+			<p id="header_title" style="font-size:40px">WiPAS Correlation
+			</p>
+			<img class="img-responsive" id="setting_img" src="img/setting.png">
+		</header>
+		<!--the container in chart-->
+		<div class="container">
+			<div class="col-lg-2 col-md-2" id="lefttree_con">
+			<div class="col-md-6" id="btn_con2" style="display: none;position: fixed;bottom: 5%;z-index: 1;">
+            	<button id="left_clear"  class="btn btn-danger">&nbsp;<i class="glyphicon glyphicon-trash"></i>&nbsp;&nbsp;&nbsp;Clear&nbsp;&nbsp;</button>
+            	<button id="left_confirm" class="btn btn-success">&nbsp;<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;&nbsp;&nbsp;Run&nbsp;&nbsp;</button>
+        		</div>
+				<div id="tree_con"></div>
+			</div>
+			<div class="col-lg-10 col-md-10" id="chart_con"></div>	
+		</div>
+		
+		<!--模态框-->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog">
+				<div class="modal-content" id="setting_modal">
+					<div class="modal-header">
+						<button type="button" class="close" id="btn_close" data-dismiss="modal" aria-hidden="true">
+							×
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							Data Setting
+						</h4>
+					</div>
+					<div class="modal-body" >
+						<div class="col-lg-12 col-md-12" id="data_con">
+							<div id="set_con" class="col-lg-12 col-md-12">
+								<div class="col-lg-6 col-md-6" id="left_con"></div>
+								<div class="col-lg-6 col-md-6" id="right_con"></div>
+							</div>
+							<div id="text_con" class="col-lg-12 col-md-12">
+								<div id="left_text" class="col-lg-6 col-md-6">
+									<textarea class="form-control" id="left_textarea" rows="3" placeholder="Please paste the testing items" ></textarea>
+								</div>
+								<div id="right_text" class="col-lg-6 col-md-6">
+									<textarea class="form-control" id="right_textarea" rows="3" placeholder="Please paste the testing items"></textarea>
+									<button type="button" class="btn btn-primary " id="paste_btn"><i class="glyphicon glyphicon-plus "></i>Add</button>
+								</div>	
+						    </div>
+						    <div id="tab_con" class="col-lg-12 col-md-12">
+						    	<div class="col-lg-12 col-md--12" id="tab_data">
+						    		<button type="button" class="btn btn-danger" id="del_btn"><i class="glyphicon glyphicon-trash"></i>Delete</button>
+							    	<table class="table table-bordered " id="data_tab">
+							    		<thead>
+							    			<tr>
+							    				<th><input type="checkbox" id="ckbx_head"></th>
+							    				<th id = 'sku'>SKU</th>
+							    				<th>Station</th>
+							    				<th>item</th>
+							    				<th>item</th>
+							    				<th>SKU</th>
+							    				<th>Station</th>
+							    			</tr>
+							    		</thead>
+							    		<tbody id="data_tab_tb">
+
+							    		</tbody>	
+							    	</table>
+						    	</div>
+						    </div>	
+						</div> 
+						<div class="col-lg-12 col-md-12" id="check_con">
+		
+								<label class="radio-inline">
+									<input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked> SameSn
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="optionsRadiosinline" id="optionsRadios4"  value="option2"> DistinctSn
+								</label>
+								
+						</div>	
+					</div>
+					<div class="modal-footer">
+			            
+						<button type="button" class="btn btn-default" id="auto_btn"><img src="img/auto_pic.png">Auto</button>
+						<button type="button" class="btn btn-primary" id="confirm_btn"><i class="glyphicon glyphicon-ok"></i>OK</button>
+				
+					</div>
+					<h5 id="version">V2.0(20181110.21)Copyright © NPI-EERF FATP-SW All Rights Reserved</h5>
+				</div>
+			</div>
+		</div>
+		<!--模态框--change limit-->
+		<div class="modal fade" id="myModal_limit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog">
+				<div class="modal-content" id="setting_modal_limit">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+							<h4 class="modal-title" id="myModalLabel">
+								Limit Revamp
+							</h4>
+					</div>
+			<div class="modal-body" id="input_modl">
+			    <div >
+					X:
+				</div>
+				<div class="col-lg-6 col-md-6" id="left_inpt_X">
+					<input id="lipt_X" type="text" onkeyup="value=value.replace(/[^(\-)\d.]/g,'')" class="form-control" placeholder="Low Limit" required="required">
+				</div>
+				<div class="col-lg-6 col-md-6" id="right_inpt_X">
+					<input id="hipt_X" type="text" onkeyup="value=value.replace(/[^(\-)\d.]/g,'')" class="form-control" placeholder="High Limit" required="required">
+				</div>	
+				<div >
+					Y:
+				</div>
+				<div class="col-lg-6 col-md-6" id="left_inpt_Y">
+					<input id="lipt_Y" type="text" onkeyup="value=value.replace(/[^(\-)\d.]/g,'')" class="form-control" placeholder="Low Limit" required="required">
+				</div>
+				<div class="col-lg-6 col-md-6" id="right_inpt_Y">
+					<input id="hipt_Y" type="text" onkeyup="value=value.replace(/[^(\-)\d.]/g,'')" class="form-control" placeholder="High Limit" required="required">
+				</div>	
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="confirm_btn_limit"><i class="glyphicon glyphicon-ok"></i>OK</button>
+			</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-treeview.js"></script>
+		<script type="text/javascript" src="js/highstock.js" ></script>
+		<!--<script type="text/javascript" src="js/boost.js" ></script>-->
+		<script type="text/javascript" src="js/exporting.js" ></script>
+		<script type="text/javascript" src="js/offline-exporting.js" ></script>
+		<script type="text/javascript" src="js/highcharts-more.js" ></script>
+        <script type='text/javascript' src='js/jquery.dataTables.min.js'></script>
+        <script type='text/javascript' src='js/jszip.min.js'></script>
+        <script type='text/javascript' src='js/dataTables.buttons.min.js'></script>
+        <script type='text/javascript' src="js/buttons.html5.min.js"></script>
+        <script type='text/javascript' src="js/CommonParameter.js"></script>
+		<script type="text/javascript" src="js/Mar_Calculation.js"></script>
+		<script type="text/javascript" src="js/Mar_SameSn.js"></script>
+		<script type="text/javascript" src="js/Mar_Drawpicture.js"></script>
+		<script type="text/javascript" src="js/Mar_Drawpicture_summary.js"></script>
+		<script type="text/javascript" src="js/WebData.js"></script>
+		<script type="text/javascript" src="js/Treenewbee.js"></script>
+		<script type="text/javascript" src="js/KeyEvent.js"></script>
+	</body>
+</html>
